@@ -29,10 +29,32 @@
 # Author: michael.frick@ericsson.com
 #
 ##################################################################################################
+
+# https://stackoverflow.com/questions/50325932/gitlab-runner-docker-could-not-resolve-host
+# do not forget to start a docker runner with network_mode = "gitlab_default"
 version: "3.7"
 services:
-  xx_xxxxx:
+  gitlab_ee:
+    image: 'gitlab/gitlab-ee:latest'
+    restart: always
+    hostname: 'gitlab.example.com'
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://gitlab.example.com'
+      # Add any other gitlab.rb configuration here, each on its own line
+    ports:
+      - '80:80'
+      - '8080:8080'      
+      - '443:443'
+      - '22:22'
+    networks:
+      default:
+        aliases:
+          - 'gitlab.example.com'
+#    volumes:
+#      - './gitlab_data/config:/etc/gitlab'
+#      - './gitlab_data/logs:/var/log/gitlab'
+#      - './gitlab_data/data:/var/opt/gitlab'
     
-
-networks:
-  gitlab_1.0_1:
+#networks:
+#  gitlab_1.0_1:
